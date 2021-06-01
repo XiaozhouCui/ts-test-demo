@@ -21,7 +21,7 @@ describe('Utils test suite', () => {
     expect(parsedUrl.query).toEqual({})
   })
 
-  test.skip('parse URL with query', () => {
+  test('parse URL with query', () => {
     const parsedUrl = Utils.parseUrl(
       'http://localhost:8080/login?user=user&password=pass'
     )
