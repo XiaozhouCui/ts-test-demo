@@ -8,11 +8,6 @@ describe('Utils test suite', () => {
     console.log('before all')
   })
 
-  // test.only('first test', () => {
-  //   const result = Utils.toUpperCase('abc')
-  //   expect(result).toBe('ABC')
-  // })
-
   test('first test', () => {
     const result = Utils.toUpperCase('abc')
     expect(result).toBe('ABC')
@@ -38,5 +33,25 @@ describe('Utils test suite', () => {
     expect(expectedQuery).toBe(expectedQuery)
   })
 
-  test.todo('test invalid URL')
+  test('test invalid URL', () => {
+    function expectError() {
+      Utils.parseUrl('')
+    }
+    expect(expectError).toThrowError()
+  })
+
+  test('test invalid URL with arrow function', () => {
+    expect(() => {
+      Utils.parseUrl('')
+    }).toThrow('Empty url')
+  })
+
+  test('test invalid URL with try catch', () => {
+    try {
+      Utils.parseUrl('')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error).toHaveProperty('message', 'Empty url')
+    }
+  })
 })
