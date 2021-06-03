@@ -5,11 +5,11 @@ describe('LoginHandler test suite', () => {
   let loginHandler: LoginHandler
 
   const requestMock = {
-    method: ''
+    method: '',
   }
   const responseMock = {
     // need to mock writeHead function inside handleOptions() private method
-    writeHead: jest.fn()
+    writeHead: jest.fn(),
   }
   const authorizerMock = {}
 
@@ -21,6 +21,11 @@ describe('LoginHandler test suite', () => {
     )
   })
 
+  afterEach(() => {
+    // clear the mock data from previous test
+    jest.clearAllMocks()
+  })
+
   // test private method handleOptions()
   test('options request', async () => {
     requestMock.method = HTTP_METHODS.OPTIONS
@@ -28,5 +33,12 @@ describe('LoginHandler test suite', () => {
     await loginHandler.handleRequest()
     // assertion for mock function writeHead() inside handleOptions()
     expect(responseMock.writeHead).toBeCalledWith(HTTP_CODES.OK)
+  })
+
+  test('not handled http method', async () => {
+    requestMock.method = 'someRandomMethod' // this will end up in he default case in handleRequest() method
+    await loginHandler.handleRequest()
+    // make sure mock is not called after jest.clearAllMocks()
+    expect(responseMock.writeHead).not.toHaveBeenCalled()
   })
 })
