@@ -1,5 +1,7 @@
+import { SessionToken } from './../../app/Models/ServerModels'
 import { LoginHandler } from '../../app/Handlers/LoginHandler'
 import { HTTP_CODES, HTTP_METHODS } from '../../app/Models/ServerModels'
+import { Utils } from '../../app/Utils/Utils'
 
 describe('LoginHandler test suite', () => {
   let loginHandler: LoginHandler
@@ -10,8 +12,13 @@ describe('LoginHandler test suite', () => {
   const responseMock = {
     // need to mock writeHead function inside handleOptions() private method
     writeHead: jest.fn(),
+    write: jest.fn(),
+    statusCode: 0,
   }
-  const authorizerMock = {}
+  const authorizerMock = {
+    generateToken: jest.fn(),
+  }
+  const getRequestBodyMock = jest.fn()
 
   beforeEach(() => {
     loginHandler = new LoginHandler(
@@ -19,12 +26,23 @@ describe('LoginHandler test suite', () => {
       responseMock as any,
       authorizerMock as any
     )
+    // replace the getRequestBody() method with mock function
+    Utils.getRequestBody = getRequestBodyMock
   })
 
   afterEach(() => {
     // clear the mock data from previous test
     jest.clearAllMocks()
   })
+
+  // dummy data
+  const dummyToken: SessionToken = {
+    tokenId: 'someTokenId',
+    userName: 'someUserName',
+    valid: true,
+    expirationTime: new Date(),
+    accessRights: [1, 2, 3],
+  }
 
   // test private method handleOptions()
   test('options request', async () => {
@@ -40,5 +58,18 @@ describe('LoginHandler test suite', () => {
     await loginHandler.handleRequest()
     // make sure mock is not called after jest.clearAllMocks()
     expect(responseMock.writeHead).not.toHaveBeenCalled()
+  })
+
+  test.only('post request with valid login', async () => {
+    requestMock.method = HTTP_METHODS.POST
+    getRequestBodyMock.mockReturnValueOnce({
+      username: 'someUser',
+      password: 'password',
+    })
+    authorizerMock.generateToken.mockReturnValueOnce(dummyToken)
+    await loginHandler.handleRequest()
+    expect(responseMock.statusCode).toBe(HTTP_CODES.CREATED)
+    expect(responseMock.writeHead).toBeCalledWith(HTTP_CODES.CREATED, { 'Content-Type': 'application/json' })
+    expect(responseMock.write).toBeCalledWith(JSON.stringify(dummyToken))
   })
 })
