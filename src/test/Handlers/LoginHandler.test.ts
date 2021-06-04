@@ -28,6 +28,8 @@ describe('LoginHandler test suite', () => {
     )
     // replace the getRequestBody() method with mock function
     Utils.getRequestBody = getRequestBodyMock
+    // use post request by default
+    requestMock.method = HTTP_METHODS.POST
   })
 
   afterEach(() => {
@@ -60,8 +62,7 @@ describe('LoginHandler test suite', () => {
     expect(responseMock.writeHead).not.toHaveBeenCalled()
   })
 
-  test.only('post request with valid login', async () => {
-    requestMock.method = HTTP_METHODS.POST
+  test('post request with valid login', async () => {
     getRequestBodyMock.mockReturnValueOnce({
       username: 'someUser',
       password: 'password',
@@ -71,5 +72,27 @@ describe('LoginHandler test suite', () => {
     expect(responseMock.statusCode).toBe(HTTP_CODES.CREATED)
     expect(responseMock.writeHead).toBeCalledWith(HTTP_CODES.CREATED, { 'Content-Type': 'application/json' })
     expect(responseMock.write).toBeCalledWith(JSON.stringify(dummyToken))
+  })
+
+  test('post request with INVALID login', async () => {
+    getRequestBodyMock.mockReturnValueOnce({
+      username: 'someUser',
+      password: 'password',
+    })
+    // invalid request: no token
+    authorizerMock.generateToken.mockReturnValueOnce(null)
+    await loginHandler.handleRequest()
+    expect(responseMock.statusCode).toBe(HTTP_CODES.NOT_fOUND)
+    expect(responseMock.write).toBeCalledWith('wrong username or password')
+  })
+
+  test('post request with unexpected error', async () => {
+    const errorMessage = 'something went wrong!'
+    // mock reject with error
+    getRequestBodyMock.mockRejectedValueOnce(new Error(errorMessage))
+    // without authorizerMock, loginHandler.handlePost() will end up in the catch error block
+    await loginHandler.handleRequest()
+    expect(responseMock.statusCode).toBe(HTTP_CODES.INTERNAL_SERVER_ERROR)
+    expect(responseMock.write).toBeCalledWith('Internal error: ' + errorMessage)
   })
 })
