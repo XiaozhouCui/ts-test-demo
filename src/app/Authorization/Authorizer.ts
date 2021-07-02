@@ -9,10 +9,12 @@ import {
 } from '../Models/ServerModels'
 import { UserCredentialsDbAccess } from './UserCredentialsDbAccess'
 
+// access to 2 dbs: SessionTokenDBAccess, UserCredentialsDbAccess
 export class Authorizer implements TokenGenerator, TokenValidator {
   private sessionTokenDBAccess: SessionTokenDBAccess
   private userCredentialsDBAccess: UserCredentialsDbAccess
 
+  // ctor allows us to inject mocks into Authorizer
   public constructor(
     sessionTokenDBAccess = new SessionTokenDBAccess(),
     userCredentialsDBAccess = new UserCredentialsDbAccess()
@@ -21,11 +23,14 @@ export class Authorizer implements TokenGenerator, TokenValidator {
     this.userCredentialsDBAccess = userCredentialsDBAccess
   }
 
+  // take in username and password
   async generateToken(account: Account): Promise<SessionToken | null> {
+    // compare username and password against userCredentialsDB
     const resultAccount = await this.userCredentialsDBAccess.getUserCredential(
       account.username,
       account.password
     )
+    // if credentials are correct, generate token and then store token into sessionTokenDB
     if (resultAccount) {
       const token: SessionToken = {
         accessRights: resultAccount.accessRights,
