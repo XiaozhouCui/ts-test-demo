@@ -45,7 +45,7 @@ describe('SessionTokenDBAccess test suite', () => {
     // nedbMock.insert in storeSessionToken() will be called
     await sessionTokenDBAccess.storeSessionToken(someToken)
     // expect insert() to be called with a CALLBACK, use "expect.any(Function)" to represent a CALLBACK
-    expect(nedbMock.insert).toBeCalledWith(someToken, expect.any(Function))
+    expect(nedbMock.insert).toBeCalledWith(someToken, expect.any(Function)) // expect.any() is a matcher?
   })
 
   test('store sessionToken with error', async () => {

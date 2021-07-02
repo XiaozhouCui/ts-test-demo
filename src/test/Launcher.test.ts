@@ -26,12 +26,12 @@ describe('Launcher test suite', () => {
     expect(mockedServer).toBeCalled()
   })
 
-    // another way to inject mocks, to test the launchApp() method
+  // another way to inject mocks, to test the launchApp() method
   test('launch app', () => {
     const launchAppMock = jest.fn()
     // prototype: access the non-static method launchApp() directly from Launcher class
     Launcher.prototype.launchApp = launchAppMock
-    // call the function
+    // call the useless function, just for demostration
     new Launcher().launchApp()
     expect(launchAppMock).toBeCalled()
   })
