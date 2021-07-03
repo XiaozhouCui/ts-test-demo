@@ -5,5 +5,5 @@
 {"accessRights":[1,2,3],"expirationTime":{"$$date":1625286061772},"tokenId":"someTokenIdq9npgd","userName":"someUserName","valid":true,"_id":"Z3LOdMUpC9SxPpZ7"}
 {"accessRights":[1,2,3,4],"expirationTime":{"$$date":1597074714001},"valid":true,"tokenId":"oi3ob6s5hvg","_id":"wuQJTkvrbPqohg0M"}
 {"accessRights":[1,2,3],"expirationTime":{"$$date":1625285912132},"tokenId":"someTokenIdzcw58o","userName":"someUserName","valid":true,"_id":"xPYT5qbV66sgRmPC"}
-{"accessRights":[1,2,3],"expirationTime":{"$$date":1625286616593},"tokenId":"someTokenIdxazzfb","userName":"someUserName","valid":true,"_id":"mKfexjeCPZXDrP4Z"}
-{"$$deleted":true,"_id":"mKfexjeCPZXDrP4Z"}
+{"accessRights":[1,2,3],"expirationTime":{"$$date":1625290929486},"tokenId":"someTokenIdwl306l","userName":"someUserName","valid":true,"_id":"oStEVk74ao6pEL8X"}
+{"$$deleted":true,"_id":"oStEVk74ao6pEL8X"}
