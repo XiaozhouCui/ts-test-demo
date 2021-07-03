@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --watchAll",
+    "itest": "jest --config jest.config.itest.ts",
     "start": "ts-node src/app/Launcher.ts"
   },
   "keywords": [],
