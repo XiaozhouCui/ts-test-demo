@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { act } from 'react-dom/test-utils'
 import { Login } from './login'
-import { fireEvent } from '@testing-library/react'
+import { fireEvent, waitFor } from '@testing-library/react'
 import { LoginService } from '../services/LoginService'
 
 describe('Login component tests', () => {
@@ -60,5 +60,17 @@ describe('Login component tests', () => {
     fireEvent.change(passwordInput, { target: { value: 'somePassword' } })
     fireEvent.click(loginButton)
     expect(loginServiceSpy).toBeCalledWith('someUser', 'somePassword')
+  })
+
+  // test the rendered login status ("Login successful" / "Login failed")
+  it('Renders status label correctly - invalid login', async () => {
+    // simulate a successful login
+    loginServiceSpy.mockResolvedValueOnce(true)
+    const inputs = container.querySelectorAll('input')
+    const loginButton = inputs[2]
+    fireEvent.click(loginButton)
+    // test async code using waitFor(), make assertion inside callback
+    await waitFor(() => expect(container.querySelector('label')).toBeInTheDocument())
+    await waitFor(() => expect(container.querySelector('label')).toHaveTextContent('Login successful'))
   })
 })
